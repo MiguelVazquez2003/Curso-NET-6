@@ -1,0 +1,15 @@
+/home/miguel/Documentos/Cdis--NET/IntroConsole/bin/Debug/net6.0/IntroConsole
+/home/miguel/Documentos/Cdis--NET/IntroConsole/bin/Debug/net6.0/IntroConsole.deps.json
+/home/miguel/Documentos/Cdis--NET/IntroConsole/bin/Debug/net6.0/IntroConsole.runtimeconfig.json
+/home/miguel/Documentos/Cdis--NET/IntroConsole/bin/Debug/net6.0/IntroConsole.dll
+/home/miguel/Documentos/Cdis--NET/IntroConsole/bin/Debug/net6.0/ref/IntroConsole.dll
+/home/miguel/Documentos/Cdis--NET/IntroConsole/bin/Debug/net6.0/IntroConsole.pdb
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.csproj.AssemblyReference.cache
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.GeneratedMSBuildEditorConfig.editorconfig
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.AssemblyInfoInputs.cache
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.AssemblyInfo.cs
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.csproj.CoreCompileInputs.cache
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.dll
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/ref/IntroConsole.dll
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.pdb
+/home/miguel/Documentos/Cdis--NET/IntroConsole/obj/Debug/net6.0/IntroConsole.genruntimeconfig.cache
