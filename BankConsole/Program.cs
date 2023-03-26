@@ -69,7 +69,7 @@ void showMenu()
 }
 
 void CreateUser()
-{
+{   /*variables de validacion*/
     bool validar_decimal = false;
     bool email_validar = false;
     bool id_existente = false;
@@ -87,8 +87,8 @@ void CreateUser()
     {
         if (int.TryParse(Console.ReadLine(), out ID) && ID > 0)
         {
-            id_existente = Storage.Validar_ID(ID); // llamar a la función después de leer ID
-            if (id_existente == false)
+            id_existente = Storage.Validar_ID(ID); // validar que el ID exista.
+            if (id_existente == false) //*si devuelve falso, el ID es diferente de null, o sea existe./
             {
                 Console.WriteLine("El ID ya existe. Inténtalo de nuevo.");
                 Console.Write("ID: ");
@@ -195,7 +195,7 @@ void DeleteUser()
         Console.Write("Ingresa el ID del usuario a eliminar: ");
         if (int.TryParse(Console.ReadLine(), out ID) && ID > 0)
         {
-            id_existente = Storage.Validar_ID(ID); // llamar a la función después de leer ID(false)
+            id_existente = Storage.Validar_ID(ID); //si es falso, significa que existe ya que es!null.
             if (id_existente == false)
             {
                 Console.WriteLine("El ID es válido.");
@@ -227,9 +227,11 @@ void DeleteUser()
 
 bool validarEmail(string Email)
 {
+    /*expresion regular de un correo electronico*/
     string patron = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-
+    /*nombre_de_usuario@nombre_de_dominio.extension_de_dominio".*/
     // Verifica si el email cumple con el patrón de la expresión regular
+    /*si coinciden las cadenas email y patron, devuelve true*/
     if (Regex.IsMatch(Email, patron))
     {
         return true;
