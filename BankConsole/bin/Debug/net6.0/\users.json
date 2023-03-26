@@ -1,0 +1,42 @@
+[
+  {
+    "TaxRegime": "M",
+    "ID": 5,
+    "Name": "Brayan",
+    "Email": "brayan67929@outlook.es",
+    "balance": 4080.0,
+    "RegisterDate": "2023-03-25T21:18:01.1653562-06:00"
+  },
+  {
+    "Department": "IT",
+    "ID": 6,
+    "Name": "Alan",
+    "Email": "ALAN@GMAIL.COM",
+    "balance": 4200.0,
+    "RegisterDate": "2023-03-25T21:18:01.4106609-06:00"
+  },
+  {
+    "Department": "IT",
+    "ID": 90,
+    "Name": "chato",
+    "Email": "chato@gmail.com",
+    "balance": 9450.0,
+    "RegisterDate": "2023-03-26T00:02:19.6707385-06:00"
+  },
+  {
+    "TaxRegime": "M",
+    "ID": 100,
+    "Name": "ola",
+    "Email": "miguel67929@outlook.es",
+    "balance": 9180.0,
+    "RegisterDate": "2023-03-26T00:36:31.8542917-06:00"
+  },
+  {
+    "TaxRegime": "M",
+    "ID": 50,
+    "Name": "Miriam",
+    "Email": "miriam@gmail.com",
+    "balance": 5100.0,
+    "RegisterDate": "2023-03-26T01:28:48.237877-06:00"
+  }
+]
