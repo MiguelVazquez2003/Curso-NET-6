@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using BankAPI.Services;
 using BankAPI.Data.BankModels;
 using BankAPI.Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankAPI.Controllers;
 
+[Authorize(Policy = "SuperAdmin")]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly AccountService accountService;
@@ -21,87 +23,92 @@ public class AccountController : ControllerBase
         this.accountTypeService = accountTypeService;
         this.clientService = clientService;
     }
-    [HttpGet]
-    public IEnumerable<Account> Get()
+   
+    [HttpGet("getall")]
+    public async Task<IEnumerable<AccountDtoOut>> Get()
     {
-        return accountService.GetAll();
+        return await accountService.GetAll();
     }
+   
     [HttpGet("{id}")]
-    public ActionResult<Account> GetById(int id)
+    public async Task<ActionResult<AccountDtoOut?>> GetById(int id)
     {
-        var account = accountService.GetById(id);
+        var account = await accountService.GetDtoById(id);
 
         if (account is null)
         {
-            return NotFound();
+            return AccountNotFound(id);
         }
         return account;
     }
 
-    [HttpPost]
-    public IActionResult Create(AccountDTO account)
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(AccountDTOIn account)
     {
-        string validation = ValidateAccount(account);
+        string validation = await ValidateAccount(account);
 
 
         if (!validation.Equals("Valid"))
         {
-            return BadRequest();
+            return BadRequest(new { message = validation });
         }
-        var newAccount = accountService.Create(account);
+        var newAccount = await accountService.Create(account);
         return CreatedAtAction(nameof(GetById), new { id = account.Id }, newAccount); // retorna status 201
 
     }
+    
 
-    [HttpPut("{id}")]
+    [HttpPut("update/{id}")]
 
-    public IActionResult Update(int id, AccountDTO account)
+    public async Task<IActionResult> Update(int id, AccountDTOIn account)
     {
         if (id != account.Id)
-            return BadRequest();
+            return BadRequest(new { message = $"El ID{id} del parametro no coincide con el ID del cuerpo {account.Id}" });
 
 
-        var accountToUpdate = accountService.GetById(id);
+        var accountToUpdate = await accountService.GetById(id);
         if (accountToUpdate is not null)
         {
-            string validation = ValidateAccount(account);
+            string validation = await ValidateAccount(account);
 
 
             if (!validation.Equals("Valid"))
             {
-                return BadRequest();
+                return BadRequest(new { message = validation });
             }
-            accountService.Update(id, account);
+            await accountService.Update(id, account);
             return NoContent();
         }
         else
         {
-            return NotFound();
+            return AccountNotFound(id);
         }
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
     {
 
-        var accountToDelete = accountService.GetById(id);
+        var accountToDelete = await accountService.GetById(id);
         if (accountToDelete is not null)
         {
-            accountService.Delete(id);
+            await accountService.Delete(id);
             return Ok();
         }
         else
         {
-            return NotFound();
+            return AccountNotFound(id);
         }
 
 
     }
-    public string ValidateAccount(AccountDTO account)
+    public async Task<string> ValidateAccount(AccountDTOIn account)
     {
         string result = "Valid";
 
-        var accountType = accountTypeService.GetById(account.AccountType);
+        var accountType = await accountTypeService.GetById(account.AccountType);
 
         if (accountType is null)
         {
@@ -109,7 +116,7 @@ public class AccountController : ControllerBase
         }
         var clientID = account.ClientId.GetValueOrDefault();
 
-        var client = clientService.GetById(clientID);
+        var client = await clientService.GetById(clientID);
 
         if (client is null)
         {
@@ -120,5 +127,9 @@ public class AccountController : ControllerBase
     }
 
 
-
+    public NotFoundObjectResult AccountNotFound(int id)
+    {
+        return NotFound(new { message = $"La cuenta con ID={id} no existe" });
+    }
 }
+

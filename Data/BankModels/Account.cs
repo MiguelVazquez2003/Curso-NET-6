@@ -15,10 +15,8 @@ public partial class Account
     public decimal Balance { get; set; }
 
     public DateTime RegDate { get; set; }
-
     [JsonIgnore]
     public virtual AccountType AccountTypeNavigation { get; set; } = null!;
-    
     [JsonIgnore]
     public virtual ICollection<BankTransaction> BankTransactions { get; set; } = new List<BankTransaction>();
     [JsonIgnore]

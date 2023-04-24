@@ -11,9 +11,9 @@ public AccountTypeService(BankContext context){
     _context=context;
 }
 
-public AccountType? GetById (int id )
+public async Task<AccountType?> GetById (int id )
 {
-    return _context.AccountTypes.Find(id);
+    return await  _context.AccountTypes.FindAsync(id);
 }
 
 

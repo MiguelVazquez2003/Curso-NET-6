@@ -1,6 +1,7 @@
 using BankAPI.Data;
 using BankAPI.Data.BankModels;
 using BankAPI.Data.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankAPI.Services;
 
@@ -12,16 +13,25 @@ public class AccountService
         _context = context;
     }
 
-    public IEnumerable<Account> GetAll()
-    {
-        return _context.Accounts.ToList();
+    public async Task<IEnumerable<AccountDtoOut>> GetAll()
+    {   
+        //nos traemos las relaciones con los typenavegation
+        return await _context.Accounts.Select(a=>new AccountDtoOut{
+            Id=a.Id,
+            AccountName=a.AccountTypeNavigation.Name,
+            //si la relacion de client es diferente de nulo, asignar a client
+            //el valor si no asigna una cadena vacia
+            ClientName=a.Client!=null ? a.Client.Name:"",
+            Balance=a.Balance,
+            RegDate=a.RegDate
+        }).ToListAsync();
     }
-    public Account? GetById(int id)
+    public async Task<Account?> GetById(int id)
     {
-        return _context.Accounts.Find(id);
+        return  await _context.Accounts.FindAsync(id);
     }
 
-    public Account Create(AccountDTO newAccountDTO)
+    public async Task<Account> Create(AccountDTOIn newAccountDTO)
     {
         var newAccount = new Account();
 
@@ -30,18 +40,18 @@ public class AccountService
         newAccount.Balance = newAccountDTO.Balance;
 
         _context.Accounts.Add(newAccount);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return newAccount;
     }
 
 
 
-    public void Update(int id, AccountDTO account)
+    public async Task Update(int id, AccountDTOIn account)
     {
 
 
-        var existingAccount = GetById(id);
+        var existingAccount = await GetById(id);
 
 
         if (existingAccount is not null)
@@ -52,20 +62,36 @@ public class AccountService
 
 
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
 
     }
 
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
-        var accountToDelete = GetById(id);
+        var accountToDelete = await GetById(id);
 
         if (accountToDelete is not null)
         {
             _context.Accounts.Remove(accountToDelete);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<AccountDtoOut?> GetDtoById(int id)
+    {   
+        //usamos el where para que solamente sea en donde sea igual el id
+        return await _context.Accounts.Where(a=>a.Id==id).
+        Select(a=>new AccountDtoOut{
+            Id=a.Id,
+            //nos traemos las relaciones con los typenavegation
+            AccountName=a.AccountTypeNavigation.Name,
+            //si la relacion de client es diferente de nulo, asignar a client
+            //el valor si no asigna una cadena vacia
+            ClientName=a.Client!=null ? a.Client.Name:"",
+            Balance=a.Balance,
+            RegDate=a.RegDate
+        }).SingleOrDefaultAsync();
     }
 }

@@ -1,10 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using BankAPI.Services;
 using BankAPI.Data.BankModels;
+using BankAPI.Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
+
 namespace BankAPI.Controllers;
 
+//[Authorize]
+[Authorize(Policy = "SuperAdmin")]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ClientController : ControllerBase
 {
     private readonly ClientService _service;
@@ -12,59 +17,73 @@ public class ClientController : ControllerBase
     {
         _service = service;
     }
-    [HttpGet]
-    public IEnumerable<Client> Get()
+    [HttpGet("getall")]
+    public async Task<IEnumerable<Client>> Get()
     {
-        return _service.GetAll();
+        return await _service.GetAll();
     }
-     [HttpGet("{id}")]
-    public ActionResult<Client> GetById(int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Client>> GetById(int id)
     {
-        var client=_service.GetById(id);
+        var client = await _service.GetById(id);
 
-        if(client is null){
-            return NotFound();
+        if (client is null)
+        {
+            return ClientNotFound(id);
         }
         return client;
     }
-    
-    [HttpPost]
-    public IActionResult Create (Client client){
-       var newClient=_service.Create(client);
-        
 
-        return CreatedAtAction(nameof(GetById),new {id=client.Id},newClient); //revuelve status 201
-    }
-    
-    [HttpPut("{id}")]
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(Client client)
+    {
+        var newClient = await _service.Create(client);
 
-    public IActionResult Update(int id, Client client){
-        if (id!=client.Id)
-            return BadRequest();
-        
-       var clientToUpdate=_service.GetById(id);
-       if(clientToUpdate is not null){
-        _service.Update(id,client);
-        return NoContent();
-    }
-    else{
-        return NotFound();
-    }
+
+        return CreatedAtAction(nameof(GetById), new { id = client.Id }, newClient); //revuelve status 201
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete (int id){
-       
-          var clientToDelete=_service.GetById(id);
-       if(clientToDelete is not null){
-        _service.Delete(id);
-        return Ok();
+    [HttpPut("update/{id}")]
+
+    public async Task<IActionResult> Update(int id, Client client)
+    {
+        if (id != client.Id)
+            return BadRequest(new { message = $"El ID={id} de la URL no coincide con el ID del cuerpo({client.Id})." });
+
+        var clientToUpdate = await _service.GetById(id);
+        if (clientToUpdate is not null)
+        {
+            await _service.Update(id, client);
+            return NoContent();
+        }
+        else
+        {
+            return ClientNotFound(id);
+
+        }
     }
-    else{
-        return NotFound();
-    }
-      
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var clientToDelete = await _service.GetById(id);
+        if (clientToDelete is not null)
+        {
+            await _service.Delete(id);
+            return Ok();
+        }
+        else
+        {
+            return ClientNotFound(id);
+
+        }
+
 
     }
-    
+
+    public NotFoundObjectResult ClientNotFound(int id)
+    {
+        return NotFound(new { message = $"El cliente con ID={id} no existe" });
+    }
+
 }
